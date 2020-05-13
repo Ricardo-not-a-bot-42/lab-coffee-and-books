@@ -1,0 +1,37 @@
+<div id="map-container"></div>
+
+{{#each places}}
+<h1><a href="/place/view/{{ _id }}">{{ name }}</a></h1>
+{{/each}}
+
+<script>
+  function initMap() {
+    const places = {{{ json places}}}
+
+    const $mapContainer = document.getElementById('map-container');
+
+    const map = new window.google.maps.Map($mapContainer, {
+      center: {lat: 38.75, lng: -9.15},
+      zoom: 11
+    })
+
+    const markers = [];
+
+    for(let place of places){
+      const marker = new window.google.maps.Marker({
+        map,
+        position: {
+          lat: place.location.coordinates[0],
+          lng: place.location.coordinates[1]
+        }
+      })
+      markers.push(marker);
+      marker.addListener('click', () => {
+        const endpoint = `/place/view/${place._id}`;
+        window.location = endpoint;
+      })
+    }
+  }
+</script>
+
+{{> mapPartial}}

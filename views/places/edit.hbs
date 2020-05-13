@@ -1,0 +1,48 @@
+<div id="map-container"></div>
+
+
+<form action="" method="POST">
+  <label for="name-input">Rename place</label>
+  <input type="text" name="name" id="name-input" value="{{ place.name }}" required>
+  <label for="type-coffee-input">Coffee House</label>
+  <input type="radio" name="type" id="type-coffee-input" value="coffee_shop">
+  <label for="type-bookstore-input">Bookstore</label>
+  <input type="radio" name="type" id="type-bookstore-input" value="bookstore">
+  <label for="lat-input">Replace coordinates</label>
+  <input type="text" name="lat" id="lat-input" placeholder="Latitude" value="{{ place.location.coordinates.[0] }}" required>
+  <input type="text" name="lng" id="lng-input" placeholder="Longitude" value="{{ place.location.coordinates.[1] }}" required>
+  <button>Submit</button>
+</form>
+
+<script>
+  function initMap() {
+
+    const $mapContainer = document.getElementById('map-container');
+    const $latInput = document.getElementById('lat-input');
+    const $lngInput = document.getElementById('lng-input');
+
+    const map = new window.google.maps.Map($mapContainer, {
+      center: { lat: 38.75, lng: -9.15},
+      zoom: 11
+    });
+
+    let marker;
+
+    map.addListener('click', event => {
+      if(marker) {
+        marker.setMap(null);
+      };
+      marker = new window.google.maps.Marker({
+        map,
+        position: {
+          lat: event.latLng.lat(),
+          lng: event.latLng.lng()
+        }
+      });
+      $latInput.value = event.latLng.lat();
+      $lngInput.value = event.latLng.lng();
+    }) 
+  }
+</script>
+
+{{> mapPartial}}
